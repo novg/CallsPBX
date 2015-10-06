@@ -1,0 +1,118 @@
+﻿<Window x:Uid="Window_1" x:Class="CallsPBX.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:CallsPBX.ViewModel"
+        Title="CallsPBX" Height="600" Width="625" MinWidth="625">
+    <Window.DataContext>
+        <local:ViewModel x:Uid="local:ViewModel_1"/>
+    </Window.DataContext>
+
+        <Window.Resources>
+        <ControlTemplate x:Uid="ControlTemplate_1" x:Key="validationErrorTemplate">
+            <DockPanel x:Uid="DockPanel_1">
+                <Border x:Uid="Border_1" BorderBrush="Red" BorderThickness="1">
+                    <AdornedElementPlaceholder x:Uid="errorAdorner" Name="errorAdorner"/>
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
+        <Style x:Uid="Style_1" x:Key="validationErrorStyle">
+            <Style.Triggers>
+                <Trigger x:Uid="Trigger_1" Property="Validation.HasError" Value="True">
+                    <Setter x:Uid="Setter_1" Property="TextBlock.Foreground" Value="Red"/>
+                    <Setter x:Uid="Setter_2" Property="TextBlock.ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid x:Uid="Grid_1">
+        <Grid.RowDefinitions>
+            <RowDefinition x:Uid="RowDefinition_1" Height="auto"/>
+            <RowDefinition x:Uid="RowDefinition_2" Height="auto"/>
+            <RowDefinition x:Uid="RowDefinition_3"/>
+            <RowDefinition x:Uid="RowDefinition_4" Height="auto"/>
+        </Grid.RowDefinitions>
+        <ToolBar x:Uid="ToolBar_1" Grid.Row="0">
+            <Button x:Uid="settings" x:Name="settings" ToolTip="Settings" Click="settings_Click">
+                <Image x:Uid="Image_1" Source="../Images/setting.ico"/>
+            </Button>
+            <Button x:Uid="save" x:Name="save" Click="save_Click" ToolTip="Save">
+                <Image x:Uid="Image_2" Source="../Images/save.ico"/>
+            </Button>
+            <Button x:Uid="about" x:Name="about" Click="about_Click" ToolTip="About">
+                <Image x:Uid="Image_3" Source="../Images/info.ico"/>
+            </Button>
+        </ToolBar>
+        <Grid x:Uid="controlGrid" x:Name="controlGrid" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Uid="RowDefinition_5"/>
+                <RowDefinition x:Uid="RowDefinition_6"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Uid="ColumnDefinition_1" Width="auto"/>
+                <ColumnDefinition x:Uid="ColumnDefinition_2" Width="auto"/>
+                <ColumnDefinition x:Uid="ColumnDefinition_3"/>
+                <ColumnDefinition x:Uid="ColumnDefinition_4" Width="150"/>
+                <ColumnDefinition x:Uid="ColumnDefinition_5" Width="165"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Uid="TextBlock_1" Grid.Row="0" Grid.Column="0" Margin="15,10,0,0" Height="16" VerticalAlignment="Top">Begin period:</TextBlock>
+            <TextBlock x:Uid="TextBlock_2" Grid.Row="0" Grid.Column="1" Margin="10,10,0,0">End period:</TextBlock>
+            <TextBlock x:Uid="TextBlock_3" Grid.Row="0" Grid.Column="3" Margin="10,10,0,0">Called phone number:</TextBlock>
+            <TextBlock x:Uid="TextBlock_4" Grid.Row="0" Grid.Column="4" Margin="10,10,15,0">Calling phone number:</TextBlock>
+            <xctk:DateTimePicker x:Uid="dtp_beginPeriod" x:Name="dtp_beginPeriod" Grid.Row="1" Grid.Column="0" DisplayDefaultValueOnEmptyText="True"
+                                 Value="{Binding Path=BeginPeriod, Mode=TwoWay}"
+                                 Format="Custom" FormatString="dd.MM.yyyy HH:mm" Margin="15,5,0,10" />
+            <xctk:DateTimePicker x:Uid="dtp_endPeriod" x:Name="dtp_endPeriod" Grid.Row="1" Grid.Column="1" DisplayDefaultValueOnEmptyText="True"
+                                 Value="{Binding Path=EndPeriod, Mode=TwoWay}"
+                                 Format="Custom" FormatString="dd.MM.yyyy HH:mm" Margin="10,5,0,10" />
+            <TextBox x:Uid="txb_inNumber" x:Name="txb_inNumber" Grid.Row="1" Grid.Column="3"
+                     Margin="10,5,0,10"
+                     Validation.ErrorTemplate="{StaticResource validationErrorTemplate}"
+                     Style="{StaticResource validationErrorStyle}">
+                <TextBox.InputBindings>
+                    <KeyBinding x:Uid="KeyBinding_1" Key="Enter" Command="{Binding KeyEnterCommand}"/>
+                </TextBox.InputBindings>
+                <TextBox.Text>
+                    <Binding x:Uid="Binding_1" Path="InNumber" NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged" Mode="OneWayToSource">
+                        <Binding.ValidationRules>
+                            <local:NumberRule x:Uid="local:NumberRule_1"/>
+                            <ExceptionValidationRule x:Uid="ExceptionValidationRule_1"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <TextBox x:Uid="txb_outNumber" x:Name="txb_outNumber" Grid.Row="1" Grid.Column="4"
+                     Margin="10,0,15,10" Height="22" VerticalAlignment="Bottom"
+                     Validation.ErrorTemplate="{StaticResource validationErrorTemplate}"
+                     Style="{StaticResource validationErrorStyle}">
+                <TextBox.InputBindings>
+                    <KeyBinding x:Uid="KeyBinding_2" Key="Enter" Command="{Binding KeyEnterCommand}"/>
+                </TextBox.InputBindings>
+                <TextBox.Text>
+                    <Binding x:Uid="Binding_2" Path="OutNumber" NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged" Mode="OneWayToSource">
+                        <Binding.ValidationRules>
+                            <local:NumberRule x:Uid="local:NumberRule_2"/>
+                            <ExceptionValidationRule x:Uid="ExceptionValidationRule_2"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+        </Grid>
+        <DataGrid x:Uid="dataGrid" x:Name="dataGrid" Grid.Row="2" AutoGenerateColumns="False" ItemsSource="{Binding Path=Calls}"
+                  AlternatingRowBackground="#F0F0F0" LoadingRow="dataGrid_LoadingRow" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Uid="DataGridTextColumn_1" Header="Date and time" Binding="{Binding Path=datetime, StringFormat=\{0:dd.MM.yyyy HH:mm\}}"/>
+                <DataGridTextColumn x:Uid="DataGridTextColumn_2" Header="Duration" Binding="{Binding Path=duration}"/>
+                <DataGridTextColumn x:Uid="DataGridTextColumn_3" Header="Called number" Binding="{Binding Path=numin}"/>
+                <DataGridTextColumn x:Uid="DataGridTextColumn_4" Header="Calling number" Binding="{Binding Path=numout}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StatusBar x:Uid="StatusBar_1" Grid.Row="3">
+            <TextBlock x:Uid="TextBlock_5">Total calls:</TextBlock>
+            <TextBlock x:Uid="TextBlock_6" Text="{Binding ElementName=dataGrid, Path=Items.Count}"/>
+        </StatusBar>
+    </Grid>
+</Window>
